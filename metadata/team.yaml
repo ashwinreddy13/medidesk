@@ -4,16 +4,16 @@
 # - If your team has 4 members: provide all 4 members.
 
 team:
-  team_id: ""
-  name: ""
-  repository: "" # URL of the newly created GitHub repository for this project
+  team_id: "72"
+  name: "nine11"
+  repository: "https://github.com/ashwinreddy13/medidesk"
 
 members:
-  - name: ""
-    email: ""
-  - name: ""
-    email: ""
-  - name: ""
-    email: ""
-  - name: ""
-    email: ""
+  - name: "Ashwin reddy"
+    email: "25p61a516@vbithyd.ac.in"
+  - name: "amogh"
+    email: "25p61a517@vbithyd.ac.in"
+  - name: "varun"
+    email: "25p61a522@vbithyd.ac.in"
+  - name: "shanyu"
+    email: "25p61a560@vbithyd.ac.in"
