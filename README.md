@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Build Secure 24 — Participant Starter Repository
 
 **Abhedya — VBIT Cybersecurity Forum, Vignana Bharathi Institute of Technology, Hyderabad**
@@ -80,3 +81,6 @@ All 4 team members can work simultaneously across separate laptops:
 ---
 
 *Build freely. Use AI freely. Secure what you build. Document what you claim. Prove what you implemented.*
+=======
+# medidesk
+>>>>>>> 8cd4999b1aca1cf3b0fd34bdcb4309352ebf487d
