@@ -663,7 +663,7 @@ Agent Response Summary:
 Resolved client-side booking submission obstruction caused by hidden required form inputs, added interactive CSS styles for time slots, and enabled multi-doctor queue switching across portals so patients can directly bridge to the assigned physician's dashboard to verify pending appointments.
 
 Commit SHA:
-pending
+c52411b2b9a331a5384b22a81a64335783725207
 
 Files Modified / Created:
 * src/templates/patient/book.html (Modified)
