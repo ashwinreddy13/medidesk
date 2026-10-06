@@ -105,6 +105,14 @@ def demo_login(role):
     Demo Fast-Switch: Allows judges and evaluators to quickly log into seeded accounts.
     Only available in demo mode.
     """
+    doctor_id = request.args.get('id', type=int)
+    if role.lower() == 'doctor' and doctor_id:
+        user = get_user_by_id(doctor_id)
+        if user and user['role'] == 'doctor':
+            login_user(user)
+            flash(f"Signed in as {user['name']} ({user['specialty']})", "info")
+            return redirect(url_for('doctor.dashboard'))
+
     demo_emails = {
         'patient': 'patient@example.com',
         'doctor': 'doctor@medidesk.com',

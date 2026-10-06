@@ -29,6 +29,19 @@
       </div>
     </div>
 
+    <!-- Demo Doctor Fast-Switch Widget -->
+    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 12px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+      <div style="font-size: 0.88rem; color: #1E3A8A;">
+        <strong>👨‍⚕️ Switch Doctor View:</strong> Showing queue for <strong>{{ user['name'] }}</strong> ({{ user['specialty'] }})
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}?id=2" class="btn btn-sm {% if user['id'] == 2 %}btn-primary{% else %}btn-secondary{% endif %}" style="font-size: 0.8rem; padding: 4px 10px;">Dr. Emily Stone (Cardio)</a>
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}?id=3" class="btn btn-sm {% if user['id'] == 3 %}btn-primary{% else %}btn-secondary{% endif %}" style="font-size: 0.8rem; padding: 4px 10px;">Dr. Alex Demo (General)</a>
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}?id=4" class="btn btn-sm {% if user['id'] == 4 %}btn-primary{% else %}btn-secondary{% endif %}" style="font-size: 0.8rem; padding: 4px 10px;">Dr. Sarah Chen (Neuro)</a>
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}?id=5" class="btn btn-sm {% if user['id'] == 5 %}btn-primary{% else %}btn-secondary{% endif %}" style="font-size: 0.8rem; padding: 4px 10px;">Dr. Marcus Vance (Pediatrics)</a>
+      </div>
+    </div>
+
     <!-- Metrics -->
     <div class="grid-4">
       <div class="stat-card">

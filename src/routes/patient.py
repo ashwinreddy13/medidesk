@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify, abort
 from security.permissions import login_required, roles_required, verify_patient_appointment_ownership, verify_patient_record_access
 from services.users import get_user_by_id, get_all_doctors, update_patient_profile
@@ -43,6 +44,7 @@ def book_appointment():
     """Flow: Select Doctor -> Select Date -> Check Schedule -> Available Slots -> Book."""
     patient_id = session['user_id']
     doctors = get_all_doctors()
+    current_date = date.today().strftime('%Y-%m-%d')
 
     if request.method == 'POST':
         doctor_id = request.form.get('doctor_id')
@@ -53,24 +55,28 @@ def book_appointment():
         try:
             doc_int = int(doctor_id)
         except (ValueError, TypeError):
-            flash("Invalid doctor selection.", "danger")
+            flash("Invalid doctor selection. Please choose a specialist from the list.", "danger")
             return redirect(url_for('patient.book_appointment'))
+
+        if not time_str or not time_str.strip():
+            flash("Please click on one of the available time slots below before submitting.", "danger")
+            return render_template('patient/book.html', doctors=doctors, selected_doc=doc_int, selected_date=date_str, reason=reason, current_date=current_date)
 
         success, result = create_appointment(patient_id, doc_int, date_str, time_str, reason)
         if not success:
             flash(result, "danger")
-            return render_template('patient/book.html', doctors=doctors, selected_doc=doc_int, selected_date=date_str, reason=reason)
+            return render_template('patient/book.html', doctors=doctors, selected_doc=doc_int, selected_date=date_str, reason=reason, current_date=current_date)
 
         flash("Appointment request submitted successfully! Your booking is currently Pending doctor confirmation.", "success")
         return redirect(url_for('patient.my_appointments'))
 
     # Pre-select doctor if passed via query string
     pre_doc = request.args.get('doctor_id', type=int)
-    pre_date = request.args.get('date', '')
+    pre_date = request.args.get('date', current_date)
     pre_time = request.args.get('time', '')
     pre_reason = request.args.get('reason', '')
 
-    return render_template('patient/book.html', doctors=doctors, pre_doc=pre_doc, pre_date=pre_date, pre_time=pre_time, pre_reason=pre_reason)
+    return render_template('patient/book.html', doctors=doctors, pre_doc=pre_doc, pre_date=pre_date, pre_time=pre_time, pre_reason=pre_reason, current_date=current_date)
 
 @patient_bp.route('/api/slots')
 @login_required

@@ -28,15 +28,18 @@
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
         Click below to immediately log in as any role without entering passwords:
       </p>
-      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
         <a href="{{ url_for('auth.demo_login', role='patient') }}" class="btn btn-sm btn-teal">
-          👤 Sign in as Demo Patient (Alex Johnson)
+          👤 Sign in as Patient (Alex Johnson)
         </a>
-        <a href="{{ url_for('auth.demo_login', role='doctor') }}" class="btn btn-sm btn-primary">
-          🩺 Sign in as Demo Doctor (Dr. Emily Stone)
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}?id=2" class="btn btn-sm btn-primary">
+          🩺 Dr. Emily Stone (Cardiology)
+        </a>
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}?id=3" class="btn btn-sm btn-primary">
+          🩺 Dr. Alex Demo (General Consult)
         </a>
         <a href="{{ url_for('auth.demo_login', role='admin') }}" class="btn btn-sm btn-secondary" style="color: #7C3AED; border-color: #DDD6FE;">
-          🛡️ Sign in as Demo Admin (System Admin)
+          🛡️ Sign in as System Admin
         </a>
       </div>
     </div>

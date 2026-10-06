@@ -48,10 +48,24 @@
                 <td>{{ a['reason'] }}</td>
                 <td><span class="badge badge-{{ a['status'].lower() }}">{{ a['status'] }}</span></td>
                 <td>
-                  {% if a['status'] in ('Pending', 'Confirmed') %}
-                    <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=a['id']) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');" style="display:inline;">
-                      <button type="submit" class="btn btn-sm btn-danger">Cancel Booking</button>
-                    </form>
+                  {% if a['status'] == 'Pending' %}
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                      <a href="{{ url_for('auth.demo_login', role='doctor') }}?id={{ a['doctor_id'] }}" class="btn btn-sm btn-teal" title="Switch to this doctor to see this request in their queue">
+                        🩺 View in Doctor Queue →
+                      </a>
+                      <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=a['id']) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-secondary" style="color: #DC2626;">Cancel</button>
+                      </form>
+                    </div>
+                  {% elif a['status'] == 'Confirmed' %}
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                      <a href="{{ url_for('auth.demo_login', role='doctor') }}?id={{ a['doctor_id'] }}" class="btn btn-sm btn-primary">
+                        🩺 Doctor Session →
+                      </a>
+                      <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=a['id']) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-secondary" style="color: #DC2626;">Cancel</button>
+                      </form>
+                    </div>
                   {% elif a['status'] == 'Completed' %}
                     <a href="{{ url_for('patient.records') }}" class="btn btn-sm btn-teal">View EHR Record →</a>
                   {% else %}
