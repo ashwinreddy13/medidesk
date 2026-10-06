@@ -4,9 +4,25 @@ import hashlib
 from werkzeug.security import generate_password_hash
 
 def get_db_path():
-    """Retrieve database path from environment or default location."""
+    """Retrieve database path from environment or default location with serverless fallback."""
+    if os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+        return os.environ.get('DATABASE_PATH', '/tmp/medidesk.db')
+
+    env_path = os.environ.get('DATABASE_PATH')
+    if env_path:
+        return env_path
+
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    return os.environ.get('DATABASE_PATH', os.path.join(base_dir, 'database', 'medidesk.db'))
+    default_dir = os.path.join(base_dir, 'database')
+    try:
+        os.makedirs(default_dir, exist_ok=True)
+        test_file = os.path.join(default_dir, '.write_test')
+        with open(test_file, 'w') as f:
+            f.write('')
+        os.remove(test_file)
+        return os.path.join(default_dir, 'medidesk.db')
+    except (OSError, PermissionError):
+        return '/tmp/medidesk.db'
 
 def get_db():
     """Get SQLite database connection with row factory and foreign keys enabled."""
