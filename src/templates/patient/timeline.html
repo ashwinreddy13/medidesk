@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Health Timeline — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link active">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <span class="badge badge-verified" style="margin-bottom: 8px;">Chronological Care Journey</span>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">Patient Health Timeline</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          A unified, tamper-evident timeline of all your consultations, diagnoses, and clinic milestones.
+        </p>
+      </div>
+
+      {% if timeline %}
+        <div class="timeline">
+          {% for item in timeline %}
+            <div class="timeline-item">
+              <div class="timeline-marker {{ item['type'] }}"></div>
+              <div class="timeline-content">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                  <div>
+                    <span class="timeline-date">● {{ item['event_date'] }}</span>
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-navy); margin-top: 4px;">
+                      {{ item['title'] }}
+                    </h3>
+                  </div>
+                  <span class="badge {% if item['type'] == 'record' %}badge-verified{% else %}badge-completed{% endif %}">
+                    {{ item['status'] }}
+                  </span>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px;">
+                  Physician: <strong>{{ item['doctor_name'] }}</strong> ({{ item['doctor_specialty'] }})
+                </p>
+
+                {% if item['prescription'] %}
+                  <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.85rem; margin-top: 8px;">
+                    <strong style="color: var(--primary-navy);">Rx / Advice:</strong> {{ item['prescription'] }}
+                  </div>
+                {% endif %}
+
+                {% if item['record_hash'] %}
+                  <div style="margin-top: 8px; font-size: 0.72rem; color: var(--text-muted);">
+                    Integrity: <span class="hash-code">{{ item['record_hash'][:24] }}...</span>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="card" style="text-align: center; padding: 48px 24px;">
+          <div style="font-size: 2.2rem; margin-bottom: 8px;">📈</div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 6px;">Your Timeline is Empty</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Completed clinic consultations and doctor records will automatically populate here in chronological order.
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}
+

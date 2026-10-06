@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link active">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">Patient Profile</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Manage your demographic details and contact preferences.</p>
+      </div>
+
+      <div class="card">
+        <form method="POST" action="{{ url_for('patient.profile') }}">
+          <div class="form-group">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ user['name'] }}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address (Immutable Login Identifier)</label>
+            <input type="email" id="email" class="form-control" value="{{ user['email'] }}" disabled style="background: #F1F5F9; cursor: not-allowed;">
+            <small style="color: var(--text-muted); font-size: 0.78rem;">To change your primary email, contact clinic administration.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Contact Phone Number</label>
+            <input type="tel" id="phone" name="phone" class="form-control" value="{{ user['phone'] or '' }}" placeholder="+1-555-0100">
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

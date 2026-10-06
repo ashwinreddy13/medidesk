@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Book Appointment — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link active">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="max-width: 720px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">Book a Consultation</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Select a physician and date to load dynamic, real-time available clinic slots.
+        </p>
+      </div>
+
+      <div class="card">
+        <form method="POST" action="{{ url_for('patient.book_appointment') }}" id="bookingForm">
+          <!-- Step 1: Select Doctor -->
+          <div class="form-group">
+            <label for="doctorSelect" class="form-label">1. Select Specialist / Doctor</label>
+            <select name="doctor_id" id="doctorSelect" class="form-select" required>
+              <option value="">-- Choose a Doctor --</option>
+              {% for d in doctors %}
+                <option value="{{ d['id'] }}" {% if pre_doc == d['id'] or selected_doc == d['id'] %}selected{% endif %}>
+                  {{ d['name'] }} — {{ d['specialty'] }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Step 2: Select Date -->
+          <div class="form-group">
+            <label for="appointmentDate" class="form-label">2. Select Consultation Date</label>
+            <input type="date" name="appointment_date" id="appointmentDate" class="form-control" required
+                   value="{{ pre_date or selected_date }}"
+                   min="{{ current_date or '2026-10-05' }}">
+            <small style="color: var(--text-muted); font-size: 0.78rem; display: block; margin-top: 4px;">
+              Our server checks working days (Monday–Friday) and filters out conflicting bookings.
+            </small>
+          </div>
+
+          <!-- Step 3: Available Slots -->
+          <div class="form-group">
+            <label class="form-label">3. Available Slots (Dynamically Verified)</label>
+            <div id="slotContainer" style="padding: 16px; background: #F8FAFC; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+              <p style="color: #64748B; font-size: 0.875rem;">Select doctor and date above to display available times.</p>
+            </div>
+            <!-- Hidden input stores selected slot -->
+            <input type="hidden" name="appointment_time" id="selectedTime" value="{{ pre_time }}" required>
+          </div>
+
+          <!-- Step 4: Reason -->
+          <div class="form-group">
+            <label for="reason" class="form-label">4. Reason for Consultation</label>
+            <textarea name="reason" id="reason" rows="3" class="form-control" required placeholder="Describe your symptoms or reason for visit (e.g., Routine health checkup, mild chest pain)...">{{ pre_reason or reason or '' }}</textarea>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+            <a href="{{ url_for('patient.best_slot') }}" style="color: var(--primary-blue); font-size: 0.875rem; text-decoration: none; font-weight: 600;">
+              ✨ Need help? Try Smart Finder
+            </a>
+            <button type="submit" class="btn btn-primary" id="submitBookingBtn">
+              Confirm & Book (Status: Pending) →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

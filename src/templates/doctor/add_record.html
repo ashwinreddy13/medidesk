@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Add Medical Record — Doctor Portal{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Clinical Command</div>
+    <a href="{{ url_for('doctor.dashboard') }}" class="sidebar-link">📊 Doctor Dashboard</a>
+    <a href="{{ url_for('doctor.appointments') }}" class="sidebar-link active">🗓️ Appointments Queue</a>
+    <div class="sidebar-title" style="margin-top: 16px;">Security & Trust</div>
+    <a href="{{ url_for('privacy.privacy_center') }}" class="sidebar-link">🔐 Privacy Center</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="max-width: 720px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <a href="{{ url_for('doctor.appointments') }}" style="color: var(--primary-blue); font-size: 0.85rem; text-decoration: none; font-weight: 600;">← Back to Queue</a>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); margin-top: 6px;">
+          Create Medical Record (EHR)
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Patient: <strong>{{ patient['name'] }}</strong> • Record will be cryptographically hashed with SHA-256.
+        </p>
+      </div>
+
+      <div class="card">
+        <form method="POST" action="{{ url_for('doctor.add_medical_record', patient_id=patient['id']) }}">
+          <input type="hidden" name="appointment_id" value="{{ appointment_id or '' }}">
+
+          <div class="form-group">
+            <label for="diagnosis" class="form-label">Clinical Diagnosis (Synthetic)</label>
+            <input type="text" id="diagnosis" name="diagnosis" class="form-control" required
+                   placeholder="e.g. Acute Viral Bronchitis, Benign Sinus Tachycardia"
+                   value="{{ diagnosis or '' }}">
+          </div>
+
+          <div class="form-group">
+            <label for="prescription" class="form-label">Prescription & Dosage</label>
+            <textarea id="prescription" name="prescription" rows="3" class="form-control" required
+                      placeholder="e.g. Amoxicillin 500mg tid x 7 days, Rest, Increased hydration">{{ prescription or '' }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="notes" class="form-label">Clinical Observations & Follow-up Guidance</label>
+            <textarea id="notes" name="notes" rows="4" class="form-control"
+                      placeholder="e.g. Vitals normal. Temperature 98.6°F, BP 120/80. Return if cough persists beyond 10 days.">{{ notes or '' }}</textarea>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
+            <a href="{{ url_for('doctor.appointments') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-teal">
+              ✓ Save, Hash & Complete Consultation
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

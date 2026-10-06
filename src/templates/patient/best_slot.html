@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Appointment Finder — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link active">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <span class="badge badge-verified" style="margin-bottom: 8px;">Deterministic Match Engine</span>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">Smart Appointment Finder ✨</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Tell us your preferred specialty, date window, and time of day. We'll instantly match the earliest and best available slots.
+        </p>
+      </div>
+
+      <!-- Filter Form -->
+      <div class="card" style="background: linear-gradient(135deg, #FFFFFF 0%, #F0FDFA 100%); border-color: #CCFBF1;">
+        <form method="GET" action="{{ url_for('patient.best_slot') }}">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="specialty" class="form-label">What are you looking for?</label>
+              <select name="specialty" id="specialty" class="form-select">
+                <option value="General Consultation" {% if current_specialty == 'General Consultation' %}selected{% endif %}>General Consultation</option>
+                <option value="Cardiology" {% if current_specialty == 'Cardiology' %}selected{% endif %}>Cardiology</option>
+                <option value="Neurology" {% if current_specialty == 'Neurology' %}selected{% endif %}>Neurology</option>
+                <option value="Pediatrics" {% if current_specialty == 'Pediatrics' %}selected{% endif %}>Pediatrics</option>
+                <option value="any" {% if current_specialty == 'any' %}selected{% endif %}>Any Specialist</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="timeframe" class="form-label">Preferred Date Window</label>
+              <select name="timeframe" id="timeframe" class="form-select">
+                <option value="this_week" {% if current_timeframe == 'this_week' %}selected{% endif %}>This Week (Next 7 Days)</option>
+                <option value="today" {% if current_timeframe == 'today' %}selected{% endif %}>Today Only</option>
+                <option value="tomorrow" {% if current_timeframe == 'tomorrow' %}selected{% endif %}>Tomorrow</option>
+                <option value="next_week" {% if current_timeframe == 'next_week' %}selected{% endif %}>Next Week</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="time_of_day" class="form-label">Preferred Time of Day</label>
+              <select name="time_of_day" id="time_of_day" class="form-select">
+                <option value="morning" {% if current_time_of_day == 'morning' %}selected{% endif %}>Morning (08:00 – 12:00)</option>
+                <option value="afternoon" {% if current_time_of_day == 'afternoon' %}selected{% endif %}>Afternoon (12:00 – 16:00)</option>
+                <option value="evening" {% if current_time_of_day == 'evening' %}selected{% endif %}>Evening (16:00 – 20:00)</option>
+                <option value="any" {% if current_time_of_day == 'any' %}selected{% endif %}>Any Time</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; text-align: right;">
+            <button type="submit" class="btn btn-teal">Find Best Slots ✨</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Grid -->
+      <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 16px;">
+        ✨ Available Best Matches
+      </h3>
+
+      {% if matches %}
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          {% for m in matches %}
+            <div class="card" style="margin-bottom: 0; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary-teal);">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="badge badge-verified">{{ m['badge'] }}</span>
+                  <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">{{ m['specialty'] }}</span>
+                </div>
+                <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-navy);">{{ m['doctor_name'] }}</h4>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">
+                  {{ m['day_name'] }}, {{ m['date'] }} • <strong>{{ m['formatted_time'] }}</strong>
+                </p>
+              </div>
+
+              <div>
+                <a href="{{ url_for('patient.book_appointment', doctor_id=m['doctor_id'], date=m['date'], time=m['time'], reason='Consultation via Smart Appointment Finder') }}" class="btn btn-primary">
+                  Book This Slot →
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="card" style="text-align: center; padding: 40px 20px;">
+          <div style="font-size: 2rem; margin-bottom: 10px;">🔍</div>
+          <h4 style="font-size: 1.1rem; font-weight: 700;">No exact slot matches found</h4>
+          <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 16px;">
+            Try expanding your date window or selecting 'Any Time' to view available alternatives.
+          </p>
+          <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-secondary">Browse All Doctor Schedules</a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}
+

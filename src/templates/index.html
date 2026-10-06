@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}MediDesk — Secure Clinic & Appointment Management{% endblock %}
+
+{% block content %}
+<main>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-pill">
+      <span>🛡️ HealthTech Security Standard 2026</span>
+    </div>
+    <h1 class="hero-title">Secure Clinic & Appointment Management</h1>
+    <p class="hero-subtitle">
+      Simple for patients. Powerful for doctors. Secure by design. Built with zero-trust role isolation, dynamic conflict-free scheduling, and cryptographic audit trails.
+    </p>
+
+    <div class="hero-cta">
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="padding: 12px 28px; font-size: 1.05rem;">Get Started as Patient</a>
+      <a href="{{ url_for('auth.login') }}" class="btn btn-secondary" style="padding: 12px 28px; font-size: 1.05rem;">Sign In</a>
+    </div>
+
+    <!-- Quick Demo Accounts Switcher -->
+    <div style="margin-top: 40px; padding: 20px; background: white; border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); text-align: left;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <span style="font-weight: 700; font-size: 0.9rem; color: var(--primary-navy);">⚡ Quick Demo Accounts (One-Click Sign In)</span>
+        <span class="badge badge-verified">Pre-Seeded Synthetic Data</span>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Click below to immediately log in as any role without entering passwords:
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <a href="{{ url_for('auth.demo_login', role='patient') }}" class="btn btn-sm btn-teal">
+          👤 Sign in as Demo Patient (Alex Johnson)
+        </a>
+        <a href="{{ url_for('auth.demo_login', role='doctor') }}" class="btn btn-sm btn-primary">
+          🩺 Sign in as Demo Doctor (Dr. Emily Stone)
+        </a>
+        <a href="{{ url_for('auth.demo_login', role='admin') }}" class="btn btn-sm btn-secondary" style="color: #7C3AED; border-color: #DDD6FE;">
+          🛡️ Sign in as Demo Admin (System Admin)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+    <h2 style="text-align: center; font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 32px;">Core Architecture Pillars</h2>
+
+    <div class="grid-3">
+      <div class="card">
+        <div style="font-size: 1.8rem; margin-bottom: 12px;">🛡️</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Secure by Design</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Strict server-side Role-Based Access Control (RBAC), Anti-IDOR object permission verification, session fixation protection, and login rate limiting.
+        </p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.8rem; margin-bottom: 12px;">🗓️</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Smart Scheduling</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Dynamic slot generation based on doctor shifts and atomic double-booking prevention. Features the deterministic Smart Appointment Finder for instant slot recommendations.
+        </p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.8rem; margin-bottom: 12px;">📈</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Patient Health Timeline</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Unified chronological timeline combining completed consultations and verified synthetic EHR records with doctor clinical summaries and prescriptions.
+        </p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.8rem; margin-bottom: 12px;">🩺</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Doctor Command Center</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Real-time appointment queues (Pending, Confirmed, Completed), one-click confirmation actions, and relationship-gated patient clinical histories.
+        </p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.8rem; margin-bottom: 12px;">🔐</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Privacy Center & Chained Audit</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          SHA-256 cryptographically chained audit ledger with live integrity verification. Patients can view personal data access history in their dedicated Privacy Center.
+        </p>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 1.8rem; margin-bottom: 12px;">🤖</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">MediDesk AI Navigator</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Conversational assistant for appointment FAQs, terminology guidance, and authorized user schedule queries with hardcoded clinical safety guardrails.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+

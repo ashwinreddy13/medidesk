@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}My Appointments — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link active">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <div>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">My Appointments</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Track and manage your scheduled consultations.</p>
+      </div>
+      <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-primary">+ Book New Appointment</a>
+    </div>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Doctor</th>
+              <th>Specialty</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in appointments %}
+              <tr>
+                <td><strong>{{ a['doctor_name'] }}</strong></td>
+                <td>{{ a['doctor_specialty'] }}</td>
+                <td>{{ a['appointment_date'] }}</td>
+                <td><strong>{{ a['appointment_time'] }}</strong></td>
+                <td>{{ a['reason'] }}</td>
+                <td><span class="badge badge-{{ a['status'].lower() }}">{{ a['status'] }}</span></td>
+                <td>
+                  {% if a['status'] in ('Pending', 'Confirmed') %}
+                    <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=a['id']) }}" onsubmit="return confirm('Are you sure you want to cancel this appointment?');" style="display:inline;">
+                      <button type="submit" class="btn btn-sm btn-danger">Cancel Booking</button>
+                    </form>
+                  {% elif a['status'] == 'Completed' %}
+                    <a href="{{ url_for('patient.records') }}" class="btn btn-sm btn-teal">View EHR Record →</a>
+                  {% else %}
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">Cancelled</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                  No appointments found. Click "+ Book New Appointment" to schedule your first visit.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Dashboard — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link active">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+    <div class="sidebar-title" style="margin-top: 16px;">Security & Trust</div>
+    <a href="{{ url_for('privacy.privacy_center') }}" class="sidebar-link">🔐 Privacy Center</a>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+      <div>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">
+          Good morning, {{ user['name'] }} 👋
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Welcome to your secure HealthTech portal.
+        </p>
+      </div>
+      <div>
+        <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-primary">+ Book Appointment</a>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid-3">
+      <div class="stat-card">
+        <div class="stat-label">Total Appointments</div>
+        <div class="stat-value">{{ total_appts }}</div>
+        <div class="stat-desc">Scheduled consultations to date</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed Consultations</div>
+        <div class="stat-value" style="color: var(--status-completed);">{{ completed_count }}</div>
+        <div class="stat-desc">Successfully concluded visits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Verified Medical Records</div>
+        <div class="stat-value" style="color: var(--primary-teal);">{{ records_count }}</div>
+        <div class="stat-desc">Digital EHR records on file</div>
+      </div>
+    </div>
+
+    <!-- Next Appointment Highlight Card -->
+    {% if next_appt %}
+      <div class="card" style="border-left: 4px solid var(--primary-blue); background: linear-gradient(to right, #FFFFFF, #F8FAFC);">
+        <div class="card-header">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.25rem;">🩺</span>
+            <span class="card-title">Next Upcoming Appointment</span>
+          </div>
+          <span class="badge badge-{{ next_appt['status'].lower() }}">{{ next_appt['status'] }}</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+          <div>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-navy);">{{ next_appt['doctor_name'] }}</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Specialty: <strong>{{ next_appt['doctor_specialty'] }}</strong></p>
+            <p style="margin-top: 4px; font-size: 0.9rem;">Reason: <em>"{{ next_appt['reason'] }}"</em></p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.3rem; font-weight: 800; color: var(--primary-blue);">{{ next_appt['appointment_time'] }}</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">{{ next_appt['appointment_date'] }}</div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="card" style="text-align: center; padding: 36px 20px;">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">🗓️</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 6px;">No Upcoming Appointments</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Ready to schedule a health checkup with one of our clinic specialists?</p>
+        <div style="display: flex; justify-content: center; gap: 12px;">
+          <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-primary">Book New Slot</a>
+          <a href="{{ url_for('patient.best_slot') }}" class="btn btn-secondary">Use Smart Finder ✨</a>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Quick Action Shortcuts -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Quick Actions</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <a href="{{ url_for('patient.book_appointment') }}" class="btn btn-primary">📅 Book Appointment</a>
+        <a href="{{ url_for('patient.best_slot') }}" class="btn btn-teal">✨ Smart Appointment Finder</a>
+        <a href="{{ url_for('patient.records') }}" class="btn btn-secondary">📁 View Medical Records</a>
+        <a href="{{ url_for('patient.health_timeline') }}" class="btn btn-secondary">📈 Health Timeline</a>
+        <a href="{{ url_for('privacy.privacy_center') }}" class="btn btn-secondary">🔐 Privacy Center</a>
+      </div>
+    </div>
+
+    <!-- Recent Appointments Table -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Recent Activity</span>
+        <a href="{{ url_for('patient.my_appointments') }}" style="font-size: 0.85rem; color: var(--primary-blue); text-decoration: none; font-weight: 600;">View All →</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Doctor</th>
+              <th>Specialty</th>
+              <th>Date & Time</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in recent_appts %}
+              <tr>
+                <td><strong>{{ a['doctor_name'] }}</strong></td>
+                <td>{{ a['doctor_specialty'] }}</td>
+                <td>{{ a['appointment_date'] }} at {{ a['appointment_time'] }}</td>
+                <td>{{ a['reason'] }}</td>
+                <td><span class="badge badge-{{ a['status'].lower() }}">{{ a['status'] }}</span></td>
+                <td>
+                  {% if a['status'] in ('Pending', 'Confirmed') %}
+                    <form method="POST" action="{{ url_for('patient.cancel_appointment', appointment_id=a['id']) }}" onsubmit="return confirm('Cancel this appointment?');" style="display:inline;">
+                      <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                    </form>
+                  {% else %}
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">No appointment activity yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

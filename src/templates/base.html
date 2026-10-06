@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MediDesk — Secure Clinic & Appointment Management{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Synthetic Data Compliance Banner -->
+  <div class="demo-banner" role="alert">
+    <span class="pill">Synthetic Data Only</span>
+    <span>Demo Environment — Synthetic demographic and dummy clinical data only. Not for clinical diagnosis or real medical records.</span>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <a href="{{ url_for('index') }}" class="brand-logo">
+      <div class="brand-icon">M+</div>
+      <span>MediDesk</span>
+    </a>
+
+    <nav aria-label="Main Navigation">
+      <ul class="nav-links">
+        {% if session.get('user_id') %}
+          {% if session.get('user_role') == 'patient' %}
+            <li><a href="{{ url_for('patient.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('patient.book_appointment') }}">Book Slot</a></li>
+            <li><a href="{{ url_for('patient.best_slot') }}">Smart Finder ✨</a></li>
+            <li><a href="{{ url_for('patient.my_appointments') }}">Appointments</a></li>
+            <li><a href="{{ url_for('patient.records') }}">Medical Records</a></li>
+            <li><a href="{{ url_for('patient.health_timeline') }}">Timeline</a></li>
+            <li><a href="{{ url_for('privacy.privacy_center') }}">Privacy Center 🔐</a></li>
+          {% elif session.get('user_role') == 'doctor' %}
+            <li><a href="{{ url_for('doctor.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('doctor.appointments') }}">Appointments Queue</a></li>
+            <li><a href="{{ url_for('privacy.privacy_center') }}">Privacy Center 🔐</a></li>
+          {% elif session.get('user_role') == 'admin' %}
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin.users') }}">User Management</a></li>
+            <li><a href="{{ url_for('admin.appointments') }}">All Appointments</a></li>
+            <li><a href="{{ url_for('admin.security_center') }}">Security Center 🟢</a></li>
+            <li><a href="{{ url_for('admin.audit_logs') }}">Audit Ledger</a></li>
+          {% endif %}
+
+          <li class="user-badge">
+            <span class="role-tag {{ session.get('user_role') }}">{{ session.get('user_role') }}</span>
+            <strong>{{ session.get('user_name') }}</strong>
+            <a href="{{ url_for('auth.logout') }}" style="color: #DC2626; font-size: 0.85rem; padding: 2px 6px;">Sign Out</a>
+          </li>
+        {% else %}
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('auth.login') }}" class="btn btn-sm btn-secondary">Sign In</a></li>
+          <li><a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-primary">Register Patient</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Flash Alerts -->
+  <div class="flash-container" style="max-width: 1200px; margin: 16px auto 0 auto; padding: 0 24px; width: 100%;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            <span>{{ message }}</span>
+            <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer; font-weight:bold; font-size:1.1rem; color:inherit;">×</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Content Block -->
+  {% block content %}{% endblock %}
+
+  <!-- Floating MediDesk AI Assistant -->
+  <button type="button" class="assistant-trigger" id="assistantTrigger" aria-label="Open MediDesk Assistant">
+    <span>💬 MediDesk Assistant</span>
+  </button>
+
+  <div class="assistant-modal" id="assistantModal" role="dialog" aria-labelledby="assistantTitle">
+    <div class="assistant-header">
+      <div>
+        <h4 id="assistantTitle" style="font-size: 0.95rem; margin: 0;">MediDesk AI Navigator</h4>
+        <small style="font-size: 0.75rem; opacity: 0.85;">Navigation, FAQs & Demo Terms</small>
+      </div>
+      <button type="button" id="closeAssistantBtn" style="background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer;">×</button>
+    </div>
+
+    <div class="assistant-body" id="assistantChatBody">
+      <div class="chat-bubble assistant">
+        👋 Hello! I am your <strong>MediDesk Clinical Assistant</strong>. I can help answer appointment FAQs, explain statuses like <em>Pending</em> and <em>Confirmed</em>, or navigate the clinic platform.
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+        <button type="button" class="btn btn-sm btn-secondary quick-chip" data-query="How do I book an appointment?">How to book?</button>
+        <button type="button" class="btn btn-sm btn-secondary quick-chip" data-query="What does Pending mean?">What is Pending?</button>
+        <button type="button" class="btn btn-sm btn-secondary quick-chip" data-query="What appointments do I have?">My appointments?</button>
+        <button type="button" class="btn btn-sm btn-secondary quick-chip" data-query="Explain privacy and security">Privacy info</button>
+      </div>
+    </div>
+
+    <div class="assistant-footer">
+      <input type="text" id="assistantInput" class="form-control" placeholder="Ask a question..." style="font-size: 0.85rem; padding: 8px 12px;">
+      <button type="button" class="btn btn-primary btn-sm" id="assistantSendBtn">Send</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/assistant.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

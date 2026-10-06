@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In — MediDesk{% endblock %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 40px auto; padding: 0 16px;">
+  <div class="card">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <div class="brand-icon" style="margin: 0 auto 12px auto; width: 44px; height: 44px; font-size: 1.4rem;">M+</div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-navy);">Sign in to MediDesk</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">Access your secure clinic portal</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" id="email" name="email" class="form-control" required placeholder="name@example.com" autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">Sign In</button>
+    </form>
+
+    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.875rem;">
+      <span style="color: var(--text-muted);">New patient? </span>
+      <a href="{{ url_for('auth.register') }}" style="color: var(--primary-blue); font-weight: 600; text-decoration: none;">Create an account</a>
+    </div>
+  </div>
+
+  <!-- Fast Demo Logins -->
+  <div style="background: white; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
+    <p style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 10px;">DEMO CREDENTIAL SHORTCUTS</p>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <a href="{{ url_for('auth.demo_login', role='patient') }}" class="btn btn-sm btn-secondary" style="justify-content: space-between;">
+        <span>👤 Patient: Alex Johnson</span>
+        <span style="font-size: 0.75rem; color: var(--primary-blue);">Click to Login →</span>
+      </a>
+      <a href="{{ url_for('auth.demo_login', role='doctor') }}" class="btn btn-sm btn-secondary" style="justify-content: space-between;">
+        <span>🩺 Doctor: Dr. Emily Stone</span>
+        <span style="font-size: 0.75rem; color: var(--primary-blue);">Click to Login →</span>
+      </a>
+      <a href="{{ url_for('auth.demo_login', role='admin') }}" class="btn btn-sm btn-secondary" style="justify-content: space-between;">
+        <span>🛡️ Admin: System Administrator</span>
+        <span style="font-size: 0.75rem; color: var(--primary-blue);">Click to Login →</span>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

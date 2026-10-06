@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}403 Forbidden — Access Restricted{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 80px auto; padding: 0 16px; text-align: center;">
+  <div class="card" style="border-top: 4px solid var(--status-cancelled); padding: 40px 24px;">
+    <div style="font-size: 3rem; margin-bottom: 12px;">🚫</div>
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--primary-navy); margin-bottom: 8px;">403</h1>
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 12px;">Access Restricted</h2>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">
+      You do not have permission to access this resource. This action violates our centralized Role-Based Access Control (RBAC) or Patient-Doctor Care Relationship policy.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 12px;">
+      <a href="{{ url_for('index') }}" class="btn btn-primary">Return to Home</a>
+      {% if session.get('user_role') == 'patient' %}
+        <a href="{{ url_for('patient.dashboard') }}" class="btn btn-secondary">Patient Dashboard</a>
+      {% elif session.get('user_role') == 'doctor' %}
+        <a href="{{ url_for('doctor.dashboard') }}" class="btn btn-secondary">Doctor Dashboard</a>
+      {% elif session.get('user_role') == 'admin' %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Admin Dashboard</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+

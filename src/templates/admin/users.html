@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}User Management — MediDesk Administration{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">System Admin</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link">📊 System Overview</a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-link active">👥 User Management</a>
+    <a href="{{ url_for('admin.appointments') }}" class="sidebar-link">🗓️ All Appointments</a>
+    <a href="{{ url_for('admin.security_center') }}" class="sidebar-link">🛡️ Security Center 🟢</a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-link">📜 Audit Ledger</a>
+    <div class="sidebar-title" style="margin-top: 16px;">Security & Trust</div>
+    <a href="{{ url_for('privacy.privacy_center') }}" class="sidebar-link">🔐 Privacy Center</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">User Management Directory</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Administrative directory of physicians and registered patients.</p>
+    </div>
+
+    <!-- Active Physicians -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Authorized Clinic Physicians ({{ doctors|length }})</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Physician Name</th>
+              <th>Clinical Specialty</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in doctors %}
+              <tr>
+                <td><strong>{{ d['name'] }}</strong></td>
+                <td>{{ d['specialty'] }}</td>
+                <td>{{ d['email'] }}</td>
+                <td>{{ d['phone'] or 'N/A' }}</td>
+                <td><span class="badge badge-completed">Active</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Registered Patients -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Registered Patients ({{ patients|length }})</span>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Email Identifier</th>
+              <th>Contact Phone</th>
+              <th>Registered At</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in patients %}
+              <tr>
+                <td><strong>{{ p['name'] }}</strong></td>
+                <td>{{ p['email'] }}</td>
+                <td>{{ p['phone'] or 'N/A' }}</td>
+                <td>{{ p['created_at'] }}</td>
+                <td><span class="badge badge-completed">Active</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

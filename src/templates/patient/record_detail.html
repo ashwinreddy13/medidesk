@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Medical Record #{{ record['id'] }} — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link active">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+          <a href="{{ url_for('patient.records') }}" style="color: var(--primary-blue); font-size: 0.85rem; text-decoration: none; font-weight: 600;">← Back to Medical Records</a>
+          <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); margin-top: 6px;">Clinical Record Summary</h1>
+        </div>
+        <span class="badge badge-verified" style="font-size: 0.85rem;">Tamper-Evident EHR</span>
+      </div>
+
+      <div class="card" style="border-top: 4px solid var(--primary-teal);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color);">
+          <div>
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--primary-navy);">{{ record['diagnosis'] }}</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+              Patient: <strong>{{ record['patient_name'] }}</strong> • Record Date: <strong>{{ record['record_date'] }}</strong>
+            </p>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary-navy);">{{ record['doctor_name'] }}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">{{ record['doctor_specialty'] }}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px;">Prescription / Treatment Plan</h3>
+          <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; font-size: 0.95rem; line-height: 1.6;">
+            {{ record['prescription'] }}
+          </div>
+        </div>
+
+        {% if record['notes'] %}
+          <div style="margin-bottom: 20px;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px;">Physician Clinical Observations</h3>
+            <p style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; font-size: 0.9rem; color: var(--text-main);">
+              {{ record['notes'] }}
+            </p>
+          </div>
+        {% endif %}
+
+        <!-- Cryptographic Provenance Block -->
+        <div style="margin-top: 24px; padding: 16px; background: #F1F5F9; border-radius: var(--radius-md); border: 1px dashed #CBD5E1;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <strong style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary-navy); letter-spacing: 0.05em;">Digital Signature & Integrity Hash</strong>
+            <span class="badge badge-completed">Verified Authenticity</span>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px;">
+            This synthetic clinical record is immutably anchored using a SHA-256 digest of patient, doctor, and diagnosis fields.
+          </p>
+          <div class="hash-code">{{ record['record_hash'] }}</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

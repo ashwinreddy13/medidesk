@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}My Medical Records — MediDesk{% endblock %}
+
+{% block content %}
+<div class="layout-container">
+  <aside class="app-sidebar">
+    <div class="sidebar-title">Patient Portal</div>
+    <a href="{{ url_for('patient.dashboard') }}" class="sidebar-link">📊 Dashboard</a>
+    <a href="{{ url_for('patient.book_appointment') }}" class="sidebar-link">📅 Book Appointment</a>
+    <a href="{{ url_for('patient.best_slot') }}" class="sidebar-link">✨ Smart Finder</a>
+    <a href="{{ url_for('patient.my_appointments') }}" class="sidebar-link">🗓️ My Appointments</a>
+    <a href="{{ url_for('patient.records') }}" class="sidebar-link active">📁 Medical Records</a>
+    <a href="{{ url_for('patient.health_timeline') }}" class="sidebar-link">📈 Health Timeline</a>
+    <a href="{{ url_for('patient.profile') }}" class="sidebar-link">👤 My Profile</a>
+  </aside>
+
+  <main class="main-content">
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--primary-navy);">Digital Medical Records (EHR)</h1>
+        <span class="badge badge-verified">SHA-256 Verified</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        View your consultation summaries, clinical diagnoses, and prescriptions filed by attending physicians.
+      </p>
+    </div>
+
+    {% if records %}
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        {% for r in records %}
+          <div class="card" style="border-left: 4px solid var(--primary-teal);">
+            <div class="card-header">
+              <div>
+                <span class="badge badge-verified" style="margin-bottom: 6px;">Verified Consultation Record</span>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-navy);">{{ r['diagnosis'] }}</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">
+                  Attending: <strong>{{ r['doctor_name'] }}</strong> ({{ r['doctor_specialty'] }}) • Recorded on {{ r['record_date'] }}
+                </p>
+              </div>
+              <a href="{{ url_for('patient.view_record', record_id=r['id']) }}" class="btn btn-sm btn-secondary">
+                View Full Details & Signature →
+              </a>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <strong style="font-size: 0.85rem; color: var(--primary-navy); text-transform: uppercase; letter-spacing: 0.04em;">Prescription & Instructions:</strong>
+              <p style="background: #F8FAFC; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-top: 6px; font-size: 0.9rem;">
+                {{ r['prescription'] }}
+              </p>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">
+              <span>Cryptographic Hash:</span>
+              <span class="hash-code">{{ r['record_hash'] }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card" style="text-align: center; padding: 48px 24px;">
+        <div style="font-size: 2.2rem; margin-bottom: 8px;">📁</div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-navy); margin-bottom: 6px;">No Medical Records Available</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Medical records are generated automatically after a doctor marks your consultation as completed.
+        </p>
+      </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
+
