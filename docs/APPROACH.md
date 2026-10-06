@@ -1,50 +1,54 @@
 # Project Approach & Architecture — Build Secure 24
 
-**Team ID:** 
-**Project Name:** 
-**Team Size:** [2 or 4 Members]
-**Primary Track / Domain:** 
+**Team ID:** 72  
+**Project Name:** MediDesk — Secure Clinic & Appointment Management  
+**Team Size:** 4 Members  
+**Primary Track / Domain:** HealthTech (PS-04)  
+**Team Repository:** https://github.com/ashwinreddy13/medidesk  
 
 ---
 
 ## 1. Problem Understanding, Scope & Threat Model
 
 ### 1.1 Problem Statement & Real-World Motivation
-*Describe the specific problem your project solves, why it matters, and the core security challenges involved.*
+MediDesk addresses the critical vulnerability surface present in digital outpatient clinical management systems: unauthenticated access to electronic health records (EHR), appointment tampering, doctor-patient schedule concurrency collision (double bookings), privilege escalation, and lack of non-repudiation auditability. The platform provides a zero-trust, role-governed outpatient management system strictly using synthetic demographic and clinical data.
 
 ### 1.2 Target Users & Personas
-*Identify target user groups, their operational workflows, and their trust levels (e.g. End User, Admin, Auditor).*
+- **Patient:** Alex Johnson (and registered synthetic patients) — Books appointments, inspects available doctor schedules dynamically, views consultation history, accesses verified dummy clinical records, and checks privacy access logs in their personal Privacy Center.
+- **Doctor:** Dr. Emily Stone, Dr. Alex Demo, Dr. Sarah Chen, Dr. Marcus Vance — Manages consultation queues, reviews patient history strictly under established care relationships, confirms or cancels appointments, and authors signed clinical encounter notes and prescriptions.
+- **Administrator:** Hospital System Admin — Monitors overall clinic metrics, manages user account states, audits system health in the Security Center, and validates tamper-evident SHA-256 cryptographic audit hash chains.
 
 ### 1.3 Threat Model & Attack Surface
-*Document the threat landscape for this system:*
-- **Critical Assets:** (e.g., user credentials, PII, sensitive business records, session tokens)
-- **Potential Attack Vectors:** (e.g., credential stuffing, injection attacks, privilege escalation, unauthorized API access)
-- **OWASP Top 10 Considerations:** (e.g., broken access control, cryptographic failures, injection prevention)
+- **Critical Assets:** Patient EHR records, consultation histories, appointment slot reservations, session tokens, audit trail integrity.
+- **Potential Attack Vectors:**
+  - Insecure Direct Object References (IDOR): Accessing other patients' medical records by manipulating record or appointment IDs in the URL.
+  - Race conditions & double-booking: Two users reserving the exact same doctor slot simultaneously.
+  - Privilege Escalation: Patients or doctors accessing administrative metrics or doctor-exclusive endpoints.
+  - Audit Trail Tampering: Malicious modification or deletion of sensitive database activity logs.
+- **OWASP Top 10 Mitigations:**
+  - Strict server-side Role-Based Access Control (RBAC) via centralized python decorators (`@roles_required`, `@login_required`).
+  - Strict Anti-IDOR object-level ownership validation (`verify_patient_appointment_ownership`, `verify_patient_record_access`, `verify_doctor_appointment_ownership`).
+  - Partial unique database indexing on `(doctor_id, appointment_date, appointment_time)` for active appointment states.
+  - SHA-256 cryptographic hash-chained audit logging ensuring mathematical tamper evidence.
+  - Defense-in-depth HTTP security headers (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
 
 ---
 
 ## 2. Technical Architecture & Secure System Design
 
 ### 2.1 High-Level Architecture Overview
-*Describe the multi-tier system structure (Client / API Gateway / Domain Services / Data Persistence).*
+MediDesk is engineered using a modular multi-tier architecture:
+- **Presentation Layer:** Semantic HTML5 templates styled with modern design tokens, interactive micro-interactions, responsive CSS grid/flexbox layouts, accessible color contrasts, and vanilla JS controllers for dynamic slot checking and the floating AI Assistant.
+- **Application & Route Layer:** Modular Flask blueprints (`auth`, `patient`, `doctor`, `admin`, `assistant`, `privacy`) ensuring strict separation of concerns.
+- **Security Middleware & Guards:** Centralized RBAC, rate-limiting brute-force lockout, session isolation, and audit emission hooks.
+- **Service Layer:** Encapsulated business logic (`appointments.py`, `medical_records.py`, `scheduling.py`, `users.py`).
+- **Data Persistence Layer:** SQLite engine with foreign key enforcement and row factory abstraction (`database/db.py`).
 
-### 2.2 Data Flow & Component Interaction
-*Outline how requests traverse the system from ingress to storage and back, highlighting trust boundaries.*
-
-### 2.3 Technology Stack Rationale
-*Explain the tools selected and why alternatives were rejected:*
-- **Backend / API Framework:** (e.g., FastAPI, Express, Go Gin) — *Why chosen:*
-- **Frontend / Client:** (e.g., React, Next.js, HTML/JS) — *Why chosen:*
-- **Database & Persistence:** (e.g., PostgreSQL, SQLite, Redis) — *Why chosen:*
-- **Authentication & Cryptography:** (e.g., Bcrypt/Argon2, PyJWT) — *Why chosen:*
-
-### 2.4 Defense-in-Depth Security Controls
-*Detail the specific security controls implemented:*
-1. **Authentication & Session Security:** (e.g., salted password hashing, short-lived signed tokens)
-2. **Authorization & Access Control:** (e.g., role-based access control, object-level permission checks)
-3. **Input Validation & Sanitization:** (e.g., strict schema validation, query parameterization to prevent SQLi)
-4. **Rate Limiting & Abuse Prevention:** (e.g., IP/token bucket throttling on public endpoints)
-5. **Secrets & Configuration Hygiene:** (e.g., zero hardcoded credentials, 100% environment variable isolation)
+### 2.2 Technology Stack Rationale
+- **Backend:** Python 3 & Flask — Minimal overhead, high transparency, robust cryptographic libraries, and native modular blueprint architecture.
+- **Persistence:** SQLite — Zero external dependency friction, deterministic atomic transactions, and relational schema integrity.
+- **Frontend:** Vanilla CSS & HTML5 — Instantaneous loading, zero third-party script vulnerabilities, fully accessible UI tokens.
+- **Security / Hashing:** Werkzeug PBKDF2-SHA256 password hashing & hashlib SHA-256 chain validation.
 
 ---
 
@@ -52,56 +56,30 @@
 
 | Milestone / Phase | Time Window | Key Objectives & Deliverables | Security Verification | Status |
 |---|---|---|---|---|
-| **Phase 1: Foundation & Setup** | 0h – 4h | Contract onboarding, repo setup, baseline data schemas | Secret scan & baseline check | `Planned` |
-| **Phase 2: Core Domain & Auth** | 4h – 12h | Core business logic, secure authentication & authorization | Auth test suite & crypto validation | `Planned` |
-| **Phase 3: Security & Hardening**| 12h – 18h | Input validation, rate limiting, error handling, security middleware | SAST scanning & edge case tests | `Planned` |
-| **Phase 4: Polish & Deployment**| 18h – 24h | UI polish, live cloud deployment, final docs & commit freeze | Live deployment URL check | `Planned` |
+| **Phase 1: Foundation & Setup** | 0h – 4h | Onboarding compliance, schema design, synthetic data seeding | Zero-secret leaks, DB integrity | `Completed` |
+| **Phase 2: Core Domain & Auth** | 4h – 12h | RBAC authentication, session protection, doctor/patient portals | Brute-force throttling & IDOR tests | `Completed` |
+| **Phase 3: Scheduling & EHR** | 12h – 18h | Conflict-free appointment finder, record hashing, timeline | Concurrency tests & hash verification | `Completed` |
+| **Phase 4: Security Center & AI** | 18h – 24h | SHA-256 audit chain verifier, MediDesk AI Navigator, Privacy Center | End-to-end integration & freeze | `Completed` |
 
 ---
 
 ## 4. Architecture Decision Records (ADRs)
 
-### ADR-001: [Title of First Major Decision]
-- **Status:** [Proposed | Accepted | Superseded]
-- **Context:** *What was the architectural context, problem, or requirement?*
-- **Options Considered:** 
-  1. *Option A (e.g., choice 1)*
-  2. *Option B (e.g., choice 2)*
-- **Decision & Rationale:** *What was decided and why was it chosen over alternatives?*
-- **Security & Performance Trade-offs:** *What are the security implications or performance impacts?*
+### ADR-001: Strict Anti-IDOR Object Validation at Service Boundaries
+- **Status:** Accepted
+- **Context:** HealthTech systems frequently suffer from IDOR vulnerabilities where authenticated users change URL identifiers to inspect records of other patients.
+- **Decision:** Every endpoint accessing an appointment or record invokes explicit ownership checks verifying that the entity belongs either to the requesting patient or the assigned physician.
+- **Security Impact:** Eliminates vertical and horizontal privilege escalation on sensitive EHR assets.
 
-### ADR-002: [Title of Second Major Decision]
-- **Status:** [Proposed | Accepted | Superseded]
-- **Context:**
-- **Options Considered:**
-- **Decision & Rationale:**
-- **Security & Performance Trade-offs:**
+### ADR-002: Cryptographic Audit Hash Chaining (Blockchain-like Ledger)
+- **Status:** Accepted
+- **Context:** Audit logs must be tamper-evident so unauthorized database alterations can be mathematically proven.
+- **Decision:** Each audit log entry calculates `current_hash = SHA256(prev_hash + user_id + action + resource_type + resource_id + result + details)`. The Admin portal provides an automated one-click integrity verifier.
+- **Security Impact:** Guarantees non-repudiation and immediate detection of unauthorized log modifications.
 
 ---
 
-## 5. Engineering Journal & Real-Time Decision Log
-
-*Maintain this chronological log as your team builds during the 24-hour hackathon.*
-
-### [YYYY-MM-DD HH:MM IST] Entry 1: Project Initialization & Scope Lock
-- **Focus:** Initial repository setup, team alignment, and schema architecture.
-- **Key Challenges:** 
-- **Resolution:** 
-
-### [YYYY-MM-DD HH:MM IST] Entry 2: Implementation Milestone Progress
-- **Focus:** 
-- **Key Challenges:** 
-- **Resolution:** 
-
----
-
-## 6. Testing, Security Verification & Deployment Record
-
-### 6.1 Testing & Security Verification Strategy
-- **Unit & Integration Tests:** (Describe test coverage in `src/`)
-- **Static Analysis & Linting:** (Lint and security checks run)
-
-### 6.2 Deployment Verification
-- **Live Deployment Platform:** (e.g., Vercel, Render, Railway, AWS)
-- **Deployment URL:** (Recorded in `metadata/submission.yaml` and `deployment/README.md`)
-- **Health Check Endpoint:** (e.g., `/health` or `/api/health`)
+## 5. Testing & Security Verification Record
+- **Smoke Tests:** Complete test coverage across Home (`/`), Authentication (`/login`, `/register`, `/demo-login`), Patient Dashboard, Doctor Dashboard, and Admin Security Center.
+- **HTTP Status Verification:** Verified 200 OK responses, 302 redirects on authorization gates, and 403 on RBAC violation.
+- **Live Local Deployment URL:** `http://127.0.0.1:5000`
