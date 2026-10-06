@@ -523,3 +523,30 @@ Actions Taken:
 * Appended session start and turn entry to docs/logs.txt
 ================================================================================
 
+================================================================================
+[2026-10-06T11:03:42+05:30] DEPLOYMENT ENVIRONMENT VARIABLES REFERENCE
+================================================================================
+User Prompt (verbatim):
+give me the environment variables for deployment
+
+Agent Response:
+I have detailed the comprehensive deployment environment variables required for hosting MediDesk across cloud or on-premise environments (FLASK_APP, FLASK_ENV, FLASK_DEBUG, PORT, SECRET_KEY, SESSION_COOKIE_SECURE, and DATABASE_PATH). I also authored a root `.env.example` file with security explanations and production-ready recommendations for TLS cookie protection and cryptographic key generation.
+
+Agent Response Summary:
+Provided the complete specification of deployment environment variables with production security considerations (TLS cookies, secret entropy, and database paths). Added a root `.env.example` template and updated submission metadata accordingly.
+
+Commit SHA:
+3879fefb754c5c5df805de131cba7ae25619a272
+
+Files Modified / Created:
+* .env.example (Created)
+* metadata/submission.yaml (Modified)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Created root .env.example with complete deployment configuration parameters
+* Updated metadata/submission.yaml with frozen commit SHA
+* Appended turn entry to docs/logs.txt
+================================================================================
+
+
