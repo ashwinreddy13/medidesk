@@ -549,4 +549,41 @@ Actions Taken:
 * Appended turn entry to docs/logs.txt
 ================================================================================
 
+================================================================================
+[2026-10-06T11:10:19+05:30] FIX VERCEL 500 FUNCTION_INVOCATION_FAILED DEPLOYMENT ERROR
+================================================================================
+User Prompt (verbatim):
+after depolying this is waht i got fix it 
+
+Agent Response:
+Diagnosed the Vercel 500 FUNCTION_INVOCATION_FAILED error: Vercel serverless Python runtime was failing because: 1) there was no root requirements.txt for automatic package installation during build, 2) no Vercel serverless function entrypoint was defined, and 3) the serverless runtime filesystem (/var/task) is strictly read-only, which crashed SQLite when attempting to open a database file in src/database/. Fixed by creating `api/index.py` pointing to the Flask app, adding `vercel.json` with universal rewrites, providing root `requirements.txt`, and configuring dynamic `/tmp/medidesk.db` fallback in `src/database/db.py` and `src/config.py`.
+
+Agent Response Summary:
+Resolved Vercel serverless invocation crash by introducing `api/index.py`, `vercel.json`, and root `requirements.txt`. Implemented automatic fallback to `/tmp/medidesk.db` to prevent read-only filesystem errors on serverless lambdas. Verified local execution in simulated VERCEL mode and committed all deployment fixes.
+
+Commit SHA:
+89add37f8c109014beff424a3bf107d6c73089d8
+
+Files Modified / Created:
+* api/index.py (Created)
+* requirements.txt (Created)
+* vercel.json (Created)
+* src/database/db.py (Modified)
+* src/config.py (Modified)
+* deployment/README.md (Modified)
+* metadata/submission.yaml (Modified)
+* docs/logs.txt (Modified)
+
+Actions Taken:
+* Created api/index.py serverless entrypoint
+* Created vercel.json URL rewrite configuration
+* Created root requirements.txt for Vercel build phase
+* Modified get_db_path in src/database/db.py with serverless /tmp fallback
+* Modified _resolve_database_path in src/config.py
+* Tested simulated VERCEL=1 environment locally
+* Updated deployment/README.md and metadata/submission.yaml
+* Appended turn entry to docs/logs.txt
+================================================================================
+
+
 

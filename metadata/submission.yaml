@@ -6,6 +6,6 @@ version: "1.0"
 submission:
   team_id: "72"
   repository: "https://github.com/ashwinreddy13/medidesk"
-  commit_sha: "3879fefb754c5c5df805de131cba7ae25619a272"
+  commit_sha: "89add37f8c109014beff424a3bf107d6c73089d8"
   deployment_url: "http://127.0.0.1:5000"
-  submitted_at: "2026-10-06T11:04:45+05:30"
+  submitted_at: "2026-10-06T11:15:20+05:30"
